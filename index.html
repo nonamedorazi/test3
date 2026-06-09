@@ -961,26 +961,26 @@
         // 메뉴 데이터베이스 (CSV 데이터를 JavaScript 객체로 변환)
         let menuDatabase = [];
 		
-       // CSV 파일 로드 함수
+		// CSV 파일 로드 함수
 		function loadMenuDatabase() {
 			fetch('menu_database.csv')
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('CSV 파일을 찾을 수 없습니다');
-					}
-            return response.text();
-				})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('CSV 파일을 찾을 수 없습니다');
+				}
+				return response.text();
+			})
 			.then(csv => {
 				menuDatabase = parseCSV(csv);
 				console.log('메뉴 데이터베이스 로드 완료:', menuDatabase.length + '개');
-				displayTodayMenu();
+			displayTodayMenu();
 			})
 			.catch(error => {
 				console.error('CSV 로드 실패:', error);
 				alert('메뉴 데이터를 불러오는데 실패했습니다. CSV 파일을 확인해주세요.');
 			});
 		}
-        
+
         // 상태 관리
         let surveyExcludedMenus = [];
         let randomExcludedMenus = [];
