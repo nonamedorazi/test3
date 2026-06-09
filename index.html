@@ -980,38 +980,6 @@
 				alert('메뉴 데이터를 불러오는데 실패했습니다. CSV 파일을 확인해주세요.');
 			});
 		}
-
-        // CSV 파싱 함수
-        function parseCSV(csv) {
-            const lines = csv.trim().split('\n');
-            const headers = lines[0].split(',');
-            const data = [];
-            
-            for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',');
-                const obj = {};
-                
-                for (let j = 0; j < headers.length; j++) {
-                    const header = headers[j];
-                    const value = values[j];
-                    
-                    if (header === '메뉴명') {
-                        obj[header] = value;
-                    } else if (header === '금액') {
-                        obj[header] = parseInt(value);
-                    } else {
-                        obj[header] = parseInt(value);
-                    }
-                }
-                
-                data.push(obj);
-            }
-            
-            return data;
-        }
-
-        // 초기화
-        menuDatabase = parseCSV(csvData);
         
         // 상태 관리
         let surveyExcludedMenus = [];
