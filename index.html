@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메뉴추천사이트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .header-nav {
+            background-color: #c0c0c0;
+            display: flex;
+            border-bottom: 2px solid #999;
+        }
+
+        .nav-tab {
+            padding: 15px 30px;
+            background-color: #c0c0c0;
+            border: 2px solid #999;
+            border-bottom: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .nav-tab.active {
+            background-color: #ffffff;
+        }
+
+        .nav-tab:hover {
+            background-color: #d0d0d0;
+        }
+
+        .container {
+            background-color: white;
+            min-height: calc(100vh - 60px);
+            padding: 40px;
+        }
+
+        .tabcontent {
+            display: none;
+        }
+
+        .tabcontent.active {
+            display: block;
+        }
+
+        /* 메인 화면 */
+        .main-layout {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .today-menu-box {
+            flex: 1;
+            border: 3px solid #333;
+        }
+
+        .menu-title {
+            background-color: white;
+            padding: 15px;
+            border-bottom: 3px solid #333;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .menu-image {
+            background-color: #999;
+            width: 100%;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #666;
+            flex-direction: column;
+        }
+
+        .description-box {
+            flex: 1;
+            border: 3px solid #333;
+            padding: 30px;
+            background-color: white;
+        }
+
+        .description-box h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .description-box p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .description-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .description-box li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .description-box h3 {
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        /* 설문 추천 화면 */
+        .survey-layout {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .survey-area {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+        }
+
+        .survey-column {
+            flex: 1;
+            border: 3px solid #333;
+            padding: 15px;
+            background-color: white;
+        }
+
+        .survey-column h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #333;
+        }
+
+        .weight-header {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .survey-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+
+        .survey-item label {
+            flex: 0 0 80px;
+            font-size: 14px;
+        }
+
+        .survey-item .radio-group {
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .survey-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar-button {
+            border: 2px solid #333;
+            padding: 15px;
+            background-color: white;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .sidebar-info {
+			border: 2px solid #333;
+			padding: 15px;
+			background-color: white;
+			text-align: center;
+			font-size: 14px;
+		}
+
+		.sidebar-info[onclick]:hover {
+			background-color: #f0f0f0;
+		}
+
+        .submit-button {
+            border: 3px solid #333;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+
+        /* 랜덤 추천 화면 */
+        .random-layout {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .random-menu-box {
+            flex: 1;
+            border: 3px solid #333;
+        }
+
+        .random-sidebar {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .toggle-button {
+            border: 2px solid #333;
+            padding: 15px;
+            background-color: white;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .toggle-button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .toggle-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .toggle-button.active:hover {
+            background-color: #45a049;
+        }
+
+        .recommend-button {
+            border: 3px solid #333;
+            padding: 20px;
+            background-color: #ff6b6b;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .recommend-button:hover {
+            background-color: #ff5252;
+        }
+
+        /* 팝업 */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-box {
+            background-color: white;
+            border: 4px solid #333;
+            width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 30px;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: #ff4444;
+            color: white;
+            border: 2px solid #333;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .popup-close:hover {
+            background-color: #cc0000;
+        }
+
+        .popup-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #333;
+        }
+
+        .menu-checkbox-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .menu-checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .menu-checkbox-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .menu-checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .menu-checkbox-item label {
+            font-size: 16px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .popup-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .popup-button {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #333;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .popup-button:hover {
+            background-color: #45a049;
+        }
+
+        .popup-button.cancel {
+            background-color: #999;
+        }
+
+        .popup-button.cancel:hover {
+            background-color: #777;
+        }
+
+        /* 예산 입력 */
+        .budget-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            margin-top: 10px;
+        }
+
+        /* 결과 팝업 */
+        .result-popup {
+            background-color: white;
+            border: 4px solid #333;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .result-layout {
+            display: flex;
+            padding: 30px;
+            gap: 20px;
+        }
+
+        .result-menu-list {
+            width: 150px;
+            border: 2px solid #333;
+            background-color: white;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .result-menu-list h4 {
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-bottom: 2px solid #333;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .menu-list-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .result-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .result-rank {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rank-box {
+            background-color: #999;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            flex-direction: column;
+        }
+
+        .rank-2 {
+            width: 200px;
+            height: 150px;
+        }
+
+        .rank-1 {
+            flex: 1;
+            height: 250px;
+            background-color: #666;
+            font-size: 28px;
+        }
+
+        .rank-3 {
+            width: 200px;
+            height: 150px;
+        }
+
+        .other-ranks {
+            border-top: 2px solid #333;
+            padding-top: 15px;
+            font-size: 14px;
+        }
+
+        .result-random-option {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .random-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .random-choice {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border: 2px solid #333;
+            background-color: white;
+        }
+
+        .random-choice input[type="radio"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .random-choice label {
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 네비게이션 -->
+    <div class="header-nav">
+        <div class="nav-tab active" onclick="openTab('Main')">오늘의 메뉴</div>
+        <div class="nav-tab" onclick="openTab('Survey')">설문 추천</div>
+        <div class="nav-tab" onclick="openTab('Random')">랜덤 추천</div>
+    </div>
+
+    <div class="container">
+        <!-- 메인 탭 -->
+        <div id="Main" class="tabcontent active">
+            <div class="main-layout">
+                <div class="today-menu-box">
+                    <div class="menu-title">오늘의 랜덤메뉴 : <span id="today-menu-name">불고기</span></div>
+                    <div class="menu-image">메뉴 사진</div>
+                </div>
+
+                <div class="description-box">
+                    <h2>❗ 희대의 메뉴 추천 사이트, 지금 이곳에 등장 ❗</h2>
+                    <p>팀원들에게 까이지 않을 점심메뉴가 필요하신가요? 당장 뭔가 먹기는 해야하는데 뭘 먹을지 모르겠나요? 점메추가 도와드립니다!</p>
+                    <h3>✔ 주요 기능 ✔</h3>
+                    <ul>
+                        <li><strong>오늘의 랜덤메뉴:</strong> 날짜 기반으로 매일 다른 메뉴를 추천해드립니다</li>
+                        <li><strong>설문 추천:</strong> 시간대, 날씨, 취향을 고려한 맞춤 추천</li>
+                        <li><strong>랜덤 추천:</strong> 원하지 않는 메뉴를 제외하고 랜덤 선택</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 설문 추천 탭 -->
+        <div id="Survey" class="tabcontent">
+            <div class="survey-layout">
+                <div class="survey-area">
+                    <!-- 종류 컬럼 -->
+                    <div class="survey-column">
+                        <h3>종류</h3>
+                        <div class="weight-header">
+                            <span>-1</span>
+                            <span>0</span>
+                            <span>1</span>
+                            <span>2</span>
+                        </div>
+                        <div class="survey-item">
+                            <label>밥</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-밥" value="-1">
+                                <input type="radio" name="type-밥" value="0" checked>
+                                <input type="radio" name="type-밥" value="1">
+                                <input type="radio" name="type-밥" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>면</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-면" value="-1">
+                                <input type="radio" name="type-면" value="0" checked>
+                                <input type="radio" name="type-면" value="1">
+                                <input type="radio" name="type-면" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>국물</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-국물" value="-1">
+                                <input type="radio" name="type-국물" value="0" checked>
+                                <input type="radio" name="type-국물" value="1">
+                                <input type="radio" name="type-국물" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>고기</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-고기" value="-1">
+                                <input type="radio" name="type-고기" value="0" checked>
+                                <input type="radio" name="type-고기" value="1">
+                                <input type="radio" name="type-고기" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>해산물</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-해산물" value="-1">
+                                <input type="radio" name="type-해산물" value="0" checked>
+                                <input type="radio" name="type-해산물" value="1">
+                                <input type="radio" name="type-해산물" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>채소</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-채소" value="-1">
+                                <input type="radio" name="type-채소" value="0" checked>
+                                <input type="radio" name="type-채소" value="1">
+                                <input type="radio" name="type-채소" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>튀김</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-튀김" value="-1">
+                                <input type="radio" name="type-튀김" value="0" checked>
+                                <input type="radio" name="type-튀김" value="1">
+                                <input type="radio" name="type-튀김" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>볶음</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-볶음" value="-1">
+                                <input type="radio" name="type-볶음" value="0" checked>
+                                <input type="radio" name="type-볶음" value="1">
+                                <input type="radio" name="type-볶음" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>구이</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-구이" value="-1">
+                                <input type="radio" name="type-구이" value="0" checked>
+                                <input type="radio" name="type-구이" value="1">
+                                <input type="radio" name="type-구이" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>찜/조림</label>
+                            <div class="radio-group">
+                                <input type="radio" name="type-찜조림" value="-1">
+                                <input type="radio" name="type-찜조림" value="0" checked>
+                                <input type="radio" name="type-찜조림" value="1">
+                                <input type="radio" name="type-찜조림" value="2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- O식 컬럼 -->
+                    <div class="survey-column">
+                        <h3>O식</h3>
+                        <div class="weight-header">
+                            <span>-1</span>
+                            <span>0</span>
+                            <span>1</span>
+                            <span>2</span>
+                        </div>
+                        <div class="survey-item">
+                            <label>한식</label>
+                            <div class="radio-group">
+                                <input type="radio" name="cuisine-한식" value="-1">
+                                <input type="radio" name="cuisine-한식" value="0" checked>
+                                <input type="radio" name="cuisine-한식" value="1">
+                                <input type="radio" name="cuisine-한식" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>양식</label>
+                            <div class="radio-group">
+                                <input type="radio" name="cuisine-양식" value="-1">
+                                <input type="radio" name="cuisine-양식" value="0" checked>
+                                <input type="radio" name="cuisine-양식" value="1">
+                                <input type="radio" name="cuisine-양식" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>중식</label>
+                            <div class="radio-group">
+                                <input type="radio" name="cuisine-중식" value="-1">
+                                <input type="radio" name="cuisine-중식" value="0" checked>
+                                <input type="radio" name="cuisine-중식" value="1">
+                                <input type="radio" name="cuisine-중식" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>일식</label>
+                            <div class="radio-group">
+                                <input type="radio" name="cuisine-일식" value="-1">
+                                <input type="radio" name="cuisine-일식" value="0" checked>
+                                <input type="radio" name="cuisine-일식" value="1">
+                                <input type="radio" name="cuisine-일식" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>동남아식</label>
+                            <div class="radio-group">
+                                <input type="radio" name="cuisine-동남아식" value="-1">
+                                <input type="radio" name="cuisine-동남아식" value="0" checked>
+                                <input type="radio" name="cuisine-동남아식" value="1">
+                                <input type="radio" name="cuisine-동남아식" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>분식</label>
+                            <div class="radio-group">
+                                <input type="radio" name="cuisine-분식" value="-1">
+                                <input type="radio" name="cuisine-분식" value="0" checked>
+                                <input type="radio" name="cuisine-분식" value="1">
+                                <input type="radio" name="cuisine-분식" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>패스트푸드</label>
+                            <div class="radio-group">
+                                <input type="radio" name="cuisine-패스트푸드" value="-1">
+                                <input type="radio" name="cuisine-패스트푸드" value="0" checked>
+                                <input type="radio" name="cuisine-패스트푸드" value="1">
+                                <input type="radio" name="cuisine-패스트푸드" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>퓨전식</label>
+                            <div class="radio-group">
+                                <input type="radio" name="cuisine-퓨전식" value="-1">
+                                <input type="radio" name="cuisine-퓨전식" value="0" checked>
+                                <input type="radio" name="cuisine-퓨전식" value="1">
+                                <input type="radio" name="cuisine-퓨전식" value="2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 맛 컬럼 -->
+                    <div class="survey-column">
+                        <h3>맛</h3>
+                        <div class="weight-header">
+                            <span>-1</span>
+                            <span>0</span>
+                            <span>1</span>
+                            <span>2</span>
+                        </div>
+                        <div class="survey-item">
+                            <label>짠맛</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-짠맛" value="-1">
+                                <input type="radio" name="taste-짠맛" value="0" checked>
+                                <input type="radio" name="taste-짠맛" value="1">
+                                <input type="radio" name="taste-짠맛" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>매운맛</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-매운맛" value="-1">
+                                <input type="radio" name="taste-매운맛" value="0" checked>
+                                <input type="radio" name="taste-매운맛" value="1">
+                                <input type="radio" name="taste-매운맛" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>새콤한맛</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-새콤한맛" value="-1">
+                                <input type="radio" name="taste-새콤한맛" value="0" checked>
+                                <input type="radio" name="taste-새콤한맛" value="1">
+                                <input type="radio" name="taste-새콤한맛" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>달콤한맛</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-달콤한맛" value="-1">
+                                <input type="radio" name="taste-달콤한맛" value="0" checked>
+                                <input type="radio" name="taste-달콤한맛" value="1">
+                                <input type="radio" name="taste-달콤한맛" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>감칠맛</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-감칠맛" value="-1">
+                                <input type="radio" name="taste-감칠맛" value="0" checked>
+                                <input type="radio" name="taste-감칠맛" value="1">
+                                <input type="radio" name="taste-감칠맛" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>고소함</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-고소함" value="-1">
+                                <input type="radio" name="taste-고소함" value="0" checked>
+                                <input type="radio" name="taste-고소함" value="1">
+                                <input type="radio" name="taste-고소함" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>담백함</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-담백함" value="-1">
+                                <input type="radio" name="taste-담백함" value="0" checked>
+                                <input type="radio" name="taste-담백함" value="1">
+                                <input type="radio" name="taste-담백함" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>기름짐</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-기름짐" value="-1">
+                                <input type="radio" name="taste-기름짐" value="0" checked>
+                                <input type="radio" name="taste-기름짐" value="1">
+                                <input type="radio" name="taste-기름짐" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>차가움</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-차가움" value="-1">
+                                <input type="radio" name="taste-차가움" value="0" checked>
+                                <input type="radio" name="taste-차가움" value="1">
+                                <input type="radio" name="taste-차가움" value="2">
+                            </div>
+                        </div>
+                        <div class="survey-item">
+                            <label>뜨거움</label>
+                            <div class="radio-group">
+                                <input type="radio" name="taste-뜨거움" value="-1">
+                                <input type="radio" name="taste-뜨거움" value="0" checked>
+                                <input type="radio" name="taste-뜨거움" value="1">
+                                <input type="radio" name="taste-뜨거움" value="2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 사이드바 -->
+                <div class="sidebar">
+					<div class="sidebar-button">결과 제외 메뉴</div>
+					<div class="sidebar-info" id="survey-exclude-status" onclick="openExcludeMenuSurvey()" style="cursor: pointer;">선택되지 않음</div>
+					<div class="sidebar-button">가용 가능 예산</div>
+					<div class="sidebar-info" id="budget-display" onclick="openBudgetInput()" style="cursor: pointer;">제한 없음</div>
+					<div class="submit-button" onclick="calculateSurveyResult()">결과 도출</div>
+				</div>
+            </div>
+        </div>
+
+        <!-- 랜덤 추천 탭 -->
+        <div id="Random" class="tabcontent">
+            <div class="random-layout">
+                <div class="random-menu-box">
+                    <div class="menu-title">랜덤메뉴 : <span id="random-menu-name">???</span></div>
+                    <div class="menu-image" id="random-menu-display">메뉴 사진</div>
+                </div>
+
+                <div class="random-sidebar">
+                    <div class="sidebar-button" onclick="openExcludeMenuRandom()">결과 제외 메뉴</div>
+                    <div class="sidebar-info" id="random-exclude-status">선택되지 않음</div>
+                    <div class="sidebar-info">이전 결과 제외</div>
+                    <div class="toggle-button active" id="exclude-previous-toggle" onclick="toggleExcludePrevious()">활성화</div>
+                    <div class="recommend-button" onclick="recommendRandomMenu()">메뉴 추천!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메뉴 제외 선택 팝업 (설문용) -->
+    <div class="popup-overlay" id="excludeMenuSurveyPopup">
+        <div class="popup-box">
+            <button class="popup-close" onclick="closeExcludeMenuSurvey()">X</button>
+            <div class="popup-title">제외할 메뉴 선택</div>
+            <div class="menu-checkbox-list" id="survey-menu-checkbox-list"></div>
+            <div class="popup-buttons">
+                <button class="popup-button cancel" onclick="closeExcludeMenuSurvey()">취소</button>
+                <button class="popup-button" onclick="applyExcludeMenuSurvey()">적용</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메뉴 제외 선택 팝업 (랜덤용) -->
+    <div class="popup-overlay" id="excludeMenuRandomPopup">
+        <div class="popup-box">
+            <button class="popup-close" onclick="closeExcludeMenuRandom()">X</button>
+            <div class="popup-title">제외할 메뉴 선택</div>
+            <div class="menu-checkbox-list" id="random-menu-checkbox-list"></div>
+            <div class="popup-buttons">
+                <button class="popup-button cancel" onclick="closeExcludeMenuRandom()">취소</button>
+                <button class="popup-button" onclick="applyExcludeMenuRandom()">적용</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 예산 입력 팝업 -->
+    <div class="popup-overlay" id="budgetPopup">
+        <div class="popup-box">
+            <button class="popup-close" onclick="closeBudgetInput()">X</button>
+            <div class="popup-title">가용 가능 예산 입력</div>
+            <input type="number" class="budget-input" id="budget-input" placeholder="예산을 입력하세요 (원)" min="0">
+            <div class="popup-buttons">
+                <button class="popup-button cancel" onclick="closeBudgetInput()">취소</button>
+                <button class="popup-button" onclick="applyBudget()">적용</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 설문 결과 팝업 -->
+    <div class="popup-overlay" id="surveyResultPopup">
+        <div class="result-popup">
+            <button class="popup-close" onclick="closeSurveyResult()">X</button>
+            
+            <div class="result-layout">
+                <div class="result-menu-list">
+                    <h4 id="result-category-list">종류</h4>
+                    <div id="result-menu-items"></div>
+                </div>
+
+                <div class="result-main">
+                    <div class="result-rank">
+                        <div class="rank-box rank-2" id="rank-2">사진<br><br>2위</div>
+                        <div class="rank-box rank-1" id="rank-1">사진<br><br>1위</div>
+                        <div class="rank-box rank-3" id="rank-3">사진<br><br>3위</div>
+                    </div>
+                    <div class="other-ranks" id="other-ranks">4위 이하 메뉴...</div>
+                </div>
+
+                <div class="result-random-option">
+                    <div class="sidebar-button" onclick="openExcludeMenuSurvey()">결과 제외 메뉴</div>
+                    <div class="sidebar-info" id="result-exclude-status">선택되지 않음</div>
+                    <div class="sidebar-button" onclick="openBudgetInput()">가용 가능 예산</div>
+                    <div class="sidebar-info" id="result-budget-display">제한 없음</div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div class="random-label">랜덤</div>
+                        <div class="random-choice">
+                            <input type="radio" name="result-random-option" id="result-random1" value="1">
+                            <label for="result-random1">1</label>
+                        </div>
+                        <div class="random-choice">
+                            <input type="radio" name="result-random-option" id="result-random2" value="2" checked>
+                            <label for="result-random2">2</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 메뉴 데이터베이스 (CSV 데이터를 JavaScript 객체로 변환)
+        let menuDatabase = [];
+		
+       // CSV 파일 로드 함수
+		function loadMenuDatabase() {
+			fetch('menu_database.csv')
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('CSV 파일을 찾을 수 없습니다');
+					}
+            return response.text();
+				})
+			.then(csv => {
+				menuDatabase = parseCSV(csv);
+				console.log('메뉴 데이터베이스 로드 완료:', menuDatabase.length + '개');
+				displayTodayMenu();
+			})
+			.catch(error => {
+				console.error('CSV 로드 실패:', error);
+				alert('메뉴 데이터를 불러오는데 실패했습니다. CSV 파일을 확인해주세요.');
+			});
+		}
+
+        // CSV 파싱 함수
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = lines[0].split(',');
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',');
+                const obj = {};
+                
+                for (let j = 0; j < headers.length; j++) {
+                    const header = headers[j];
+                    const value = values[j];
+                    
+                    if (header === '메뉴명') {
+                        obj[header] = value;
+                    } else if (header === '금액') {
+                        obj[header] = parseInt(value);
+                    } else {
+                        obj[header] = parseInt(value);
+                    }
+                }
+                
+                data.push(obj);
+            }
+            
+            return data;
+        }
+
+        // 초기화
+        menuDatabase = parseCSV(csvData);
+        
+        // 상태 관리
+        let surveyExcludedMenus = [];
+        let randomExcludedMenus = [];
+        let previousResults = [];
+        let excludePreviousActive = true;
+        let budgetLimit = null;
+
+        // 속성 매핑
+        const attributeMapping = {
+            'type': ['밥', '면', '국물', '고기', '해산물', '채소', '튀김', '볶음', '구이', '찜조림'],
+            'cuisine': ['한식', '양식', '중식', '일식', '동남아식', '분식', '패스트푸드', '퓨전식'],
+            'taste': ['짠맛', '매운맛', '새콤한맛', '달콤한맛', '감칠맛', '고소함', '담백함', '기름짐', '차가움', '뜨거움']
+        };
+
+        // 탭 전환
+        function openTab(tabName) {
+            const tabcontents = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontents.length; i++) {
+                tabcontents[i].classList.remove("active");
+            }
+            
+            const navTabs = document.getElementsByClassName("nav-tab");
+            for (let i = 0; i < navTabs.length; i++) {
+                navTabs[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+
+        // 날짜 기반 난수
+        function getDateBasedRandom() {
+            const today = new Date();
+            const seed = today.getFullYear() * 10000 + 
+                        (today.getMonth() + 1) * 100 + 
+                        today.getDate();
+            
+            const x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
+
+        // 오늘의 메뉴
+        function displayTodayMenu() {
+            const random = getDateBasedRandom();
+            const index = Math.floor(random * menuDatabase.length);
+            const menu = menuDatabase[index];
+            
+            document.getElementById('today-menu-name').textContent = menu.메뉴명;
+        }
+
+        // 설문 - 메뉴 제외 팝업 열기
+        function openExcludeMenuSurvey() {
+            const checkboxList = document.getElementById('survey-menu-checkbox-list');
+            checkboxList.innerHTML = '';
+            
+            menuDatabase.forEach((menu, index) => {
+                const item = document.createElement('div');
+                item.className = 'menu-checkbox-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'survey-menu-' + index;
+                checkbox.value = menu.메뉴명;
+                checkbox.checked = surveyExcludedMenus.includes(menu.메뉴명);
+                
+                const label = document.createElement('label');
+                label.htmlFor = 'survey-menu-' + index;
+                label.textContent = menu.메뉴명 + ' (' + menu.금액 + '원)';
+                
+                item.appendChild(checkbox);
+                item.appendChild(label);
+                checkboxList.appendChild(item);
+            });
+            
+            document.getElementById('excludeMenuSurveyPopup').classList.add('active');
+        }
+
+        function closeExcludeMenuSurvey() {
+            document.getElementById('excludeMenuSurveyPopup').classList.remove('active');
+        }
+
+        function applyExcludeMenuSurvey() {
+            const checkboxes = document.querySelectorAll('#survey-menu-checkbox-list input[type="checkbox"]');
+            surveyExcludedMenus = [];
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    surveyExcludedMenus.push(checkbox.value);
+                }
+            });
+            
+            updateSurveyExcludeStatus();
+            closeExcludeMenuSurvey();
+        }
+
+        function updateSurveyExcludeStatus() {
+            const statusElement = document.getElementById('survey-exclude-status');
+            const resultStatusElement = document.getElementById('result-exclude-status');
+            const text = surveyExcludedMenus.length === 0 ? '선택되지 않음' : surveyExcludedMenus.length + '개 선택됨';
+            statusElement.textContent = text;
+            if (resultStatusElement) resultStatusElement.textContent = text;
+        }
+
+        // 예산 입력
+        function openBudgetInput() {
+            document.getElementById('budgetPopup').classList.add('active');
+            document.getElementById('budget-input').value = budgetLimit || '';
+        }
+
+        function closeBudgetInput() {
+            document.getElementById('budgetPopup').classList.remove('active');
+        }
+
+        function applyBudget() {
+            const input = document.getElementById('budget-input').value;
+            budgetLimit = input ? parseInt(input) : null;
+            
+            const displayText = budgetLimit ? budgetLimit.toLocaleString() + '원' : '제한 없음';
+            document.getElementById('budget-display').textContent = displayText;
+            document.getElementById('result-budget-display').textContent = displayText;
+            
+            closeBudgetInput();
+        }
+
+        // 설문 결과 계산
+        function calculateSurveyResult() {
+            // 가중치 수집
+            const weights = {};
+            
+            // 종류
+            attributeMapping.type.forEach(attr => {
+                const selected = document.querySelector(`input[name="type-${attr}"]:checked`);
+                weights[attr] = selected ? parseInt(selected.value) : 0;
+            });
+            
+            // O식
+            attributeMapping.cuisine.forEach(attr => {
+                const selected = document.querySelector(`input[name="cuisine-${attr}"]:checked`);
+                weights[attr] = selected ? parseInt(selected.value) : 0;
+            });
+            
+            // 맛
+            attributeMapping.taste.forEach(attr => {
+                const selected = document.querySelector(`input[name="taste-${attr}"]:checked`);
+                weights[attr] = selected ? parseInt(selected.value) : 0;
+            });
+            
+            // 메뉴별 점수 계산
+            const menuScores = [];
+            
+            menuDatabase.forEach(menu => {
+                // 제외된 메뉴는 스킵
+                if (surveyExcludedMenus.includes(menu.메뉴명)) return;
+                
+                // 예산 초과 메뉴는 스킵
+                if (budgetLimit && menu.금액 > budgetLimit) return;
+                
+                let score = 0;
+                
+                // 각 속성에 대해 점수 계산
+                Object.keys(weights).forEach(attr => {
+                    if (menu[attr] === 1) {
+                        score += weights[attr];
+                    }
+                });
+                
+                menuScores.push({
+                    name: menu.메뉴명,
+                    score: score,
+                    price: menu.금액
+                });
+            });
+            
+            // 점수순으로 정렬
+            menuScores.sort((a, b) => b.score - a.score);
+            
+            // 결과 표시
+            displaySurveyResult(menuScores);
+        }
+
+        // 설문 결과 표시
+        function displaySurveyResult(menuScores) {
+            if (menuScores.length === 0) {
+                alert('조건에 맞는 메뉴가 없습니다!');
+                return;
+            }
+            
+            // 1, 2, 3위 표시
+            if (menuScores.length >= 1) {
+                document.getElementById('rank-1').innerHTML = `사진<br><br>1위 ${menuScores[0].name}<br>(${menuScores[0].price.toLocaleString()}원)`;
+            }
+            
+            if (menuScores.length >= 2) {
+                document.getElementById('rank-2').innerHTML = `사진<br><br>2위 ${menuScores[1].name}<br>(${menuScores[1].price.toLocaleString()}원)`;
+            } else {
+                document.getElementById('rank-2').innerHTML = '사진<br><br>2위 -';
+            }
+            
+            if (menuScores.length >= 3) {
+                document.getElementById('rank-3').innerHTML = `사진<br><br>3위 ${menuScores[2].name}<br>(${menuScores[2].price.toLocaleString()}원)`;
+            } else {
+                document.getElementById('rank-3').innerHTML = '사진<br><br>3위 -';
+            }
+            
+            // 4위 이하 표시
+            if (menuScores.length > 3) {
+                const otherRanks = menuScores.slice(3, 10).map((m, i) => `${i + 4}위 ${m.name}`).join(' ');
+                document.getElementById('other-ranks').textContent = otherRanks + (menuScores.length > 10 ? '...' : '');
+            } else {
+                document.getElementById('other-ranks').textContent = '4위 이하 메뉴 없음';
+            }
+            
+            // 메뉴 리스트 표시
+            const menuItems = document.getElementById('result-menu-items');
+            menuItems.innerHTML = '';
+            menuScores.slice(0, 20).forEach(menu => {
+                const item = document.createElement('div');
+                item.className = 'menu-list-item';
+                item.textContent = menu.name;
+                menuItems.appendChild(item);
+            });
+            
+            // 팝업 표시
+            document.getElementById('surveyResultPopup').classList.add('active');
+        }
+
+        function closeSurveyResult() {
+            document.getElementById('surveyResultPopup').classList.remove('active');
+        }
+
+        // 랜덤 - 메뉴 제외 팝업
+        function openExcludeMenuRandom() {
+            const checkboxList = document.getElementById('random-menu-checkbox-list');
+            checkboxList.innerHTML = '';
+            
+            menuDatabase.forEach((menu, index) => {
+                const item = document.createElement('div');
+                item.className = 'menu-checkbox-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'random-menu-' + index;
+                checkbox.value = menu.메뉴명;
+                checkbox.checked = randomExcludedMenus.includes(menu.메뉴명);
+                
+                const label = document.createElement('label');
+                label.htmlFor = 'random-menu-' + index;
+                label.textContent = menu.메뉴명;
+                
+                item.appendChild(checkbox);
+                item.appendChild(label);
+                checkboxList.appendChild(item);
+            });
+            
+            document.getElementById('excludeMenuRandomPopup').classList.add('active');
+        }
+
+        function closeExcludeMenuRandom() {
+            document.getElementById('excludeMenuRandomPopup').classList.remove('active');
+        }
+
+        function applyExcludeMenuRandom() {
+            const checkboxes = document.querySelectorAll('#random-menu-checkbox-list input[type="checkbox"]');
+            randomExcludedMenus = [];
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    randomExcludedMenus.push(checkbox.value);
+                }
+            });
+            
+            updateRandomExcludeStatus();
+            closeExcludeMenuRandom();
+        }
+
+        function updateRandomExcludeStatus() {
+            const statusElement = document.getElementById('random-exclude-status');
+            if (randomExcludedMenus.length === 0) {
+                statusElement.textContent = '선택되지 않음';
+            } else {
+                statusElement.textContent = randomExcludedMenus.length + '개 선택됨';
+            }
+        }
+
+        // 이전 결과 제외 토글
+        function toggleExcludePrevious() {
+            excludePreviousActive = !excludePreviousActive;
+            const toggleButton = document.getElementById('exclude-previous-toggle');
+            
+            if (excludePreviousActive) {
+                toggleButton.textContent = '활성화';
+                toggleButton.classList.add('active');
+            } else {
+                toggleButton.textContent = '비활성화';
+                toggleButton.classList.remove('active');
+                previousResults = [];
+            }
+        }
+
+        // 랜덤 메뉴 추천
+        function recommendRandomMenu() {
+            const displayElement = document.getElementById('random-menu-display');
+            const nameElement = document.getElementById('random-menu-name');
+            
+            let availableMenus = menuDatabase.filter(menu => {
+                if (randomExcludedMenus.includes(menu.메뉴명)) return false;
+                if (excludePreviousActive && previousResults.includes(menu.메뉴명)) return false;
+                return true;
+            });
+            
+            if (randomExcludedMenus.length === menuDatabase.length) {
+                displayElement.innerHTML = '<div class="error-message">결과 제외 메뉴가 전부 선택되어 있어요!</div>';
+                nameElement.textContent = '???';
+                return;
+            }
+            
+            if (availableMenus.length === 0) {
+                displayElement.innerHTML = '<div class="error-message">준비된 메뉴가 다 떨어졌어요...</div>';
+                nameElement.textContent = '???';
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * availableMenus.length);
+            const selectedMenu = availableMenus[randomIndex];
+            
+            if (excludePreviousActive) {
+                previousResults.push(selectedMenu.메뉴명);
+            }
+            
+            nameElement.textContent = selectedMenu.메뉴명;
+            displayElement.innerHTML = '메뉴 사진';
+        }
+
+        // 팝업 외부 클릭 시 닫기
+        document.querySelectorAll('.popup-overlay').forEach(popup => {
+            popup.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // 페이지 로드
+        window.onload = function() {
+            loadMenuDatabase();
+        };
+    </script>
+</body>
+</html>
