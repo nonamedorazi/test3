@@ -997,6 +997,9 @@
 		
 		// CSV 파일 로드 함수
 		function loadMenuDatabase() {
+			// parseCSV 정의여부 테스트
+			console.log('parseCSV 함수 존재 여부:', typeof parseCSV);
+			
 			fetch('menu_database.csv')
 			.then(response => {
 				if (!response.ok) {
