@@ -961,6 +961,13 @@
         // 메뉴 데이터베이스 (CSV 데이터를 JavaScript 객체로 변환)
         let menuDatabase = [];
 		
+		// 상태 관리
+        let surveyExcludedMenus = [];
+        let randomExcludedMenus = [];
+        let previousResults = [];
+        let excludePreviousActive = true;
+        let budgetLimit = null;
+		
 		// parseCSV 함수 (CSV파일 로드 함수보다 앞에 올 것)
 		function parseCSV(csv) {
 			const lines = csv.trim().split('\n');
@@ -1007,13 +1014,6 @@
 				alert('메뉴 데이터를 불러오는데 실패했습니다. CSV 파일을 확인해주세요.');
 			});
 		}
-
-        // 상태 관리
-        let surveyExcludedMenus = [];
-        let randomExcludedMenus = [];
-        let previousResults = [];
-        let excludePreviousActive = true;
-        let budgetLimit = null;
 
         // 속성 매핑
         const attributeMapping = {
