@@ -398,6 +398,26 @@
         .popup-button.cancel:hover {
             background-color: #777;
         }
+		
+		.toggle-all-button {
+			padding: 8px 16px;
+			background-color: #3498db;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 14px;
+			font-weight: 500;
+			transition: background-color 0.3s;
+		}
+
+		.toggle-all-button:hover {
+			background-color: #2980b9;
+		}
+
+.toggle-all-button:active {
+    transform: scale(0.98);
+}
 
         /* 예산 입력 */
         .budget-input {
@@ -883,6 +903,9 @@
         <div class="popup-box">
             <button class="popup-close" onclick="closeExcludeMenuSurvey()">X</button>
             <div class="popup-title">제외할 메뉴 선택</div>
+			<div style="margin-bottom: 10px; text-align: right;">
+				<button class="toggle-all-button" id="toggleAllRandomButton" onclick="toggleAllRandomMenus()">일괄선택</button>
+			</div>
             <div class="menu-checkbox-list" id="survey-menu-checkbox-list"></div>
             <div class="popup-buttons">
                 <button class="popup-button cancel" onclick="closeExcludeMenuSurvey()">취소</button>
@@ -1257,6 +1280,7 @@
                 checkbox.id = 'random-menu-' + index;
                 checkbox.value = menu.메뉴명;
                 checkbox.checked = randomExcludedMenus.includes(menu.메뉴명);
+				checkbox.addEventListener('change', updateToggleAllRandomButton);
                 
                 const label = document.createElement('label');
                 label.htmlFor = 'random-menu-' + index;
@@ -1267,8 +1291,34 @@
                 checkboxList.appendChild(item);
             });
             
+			updateToggleAllRandomButton();
             document.getElementById('excludeMenuRandomPopup').classList.add('active');
         }
+		
+		// 랜덤 추천 팝업의 모든 메뉴 선택/해제
+		function toggleAllRandomMenus() {
+			const checkboxes = document.querySelectorAll('#random-menu-checkbox-list input[type="checkbox"]');
+			const button = document.getElementById('toggleAllRandomButton');
+			const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    
+			if (allChecked) {
+				checkboxes.forEach(cb => cb.checked = false);
+				button.textContent = '일괄선택';
+			} else {
+				checkboxes.forEach(cb => cb.checked = true);
+				button.textContent = '일괄해제';
+			}
+		}
+
+		function updateToggleAllRandomButton() {
+			const checkboxes = document.querySelectorAll('#random-menu-checkbox-list input[type="checkbox"]');
+			const button = document.getElementById('toggleAllRandomButton');
+    
+			if (checkboxes.length === 0) return;
+    
+			const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+			button.textContent = allChecked ? '일괄해제' : '일괄선택';
+		}
 
         function closeExcludeMenuRandom() {
             document.getElementById('excludeMenuRandomPopup').classList.remove('active');
@@ -1296,6 +1346,32 @@
                 statusElement.textContent = randomExcludedMenus.length + '개 선택됨';
             }
         }
+		
+		//모든 메뉴 선택/해제
+		function toggleAllRandomMenus() {
+			const checkboxes = document.querySelectorAll('#random-menu-checkbox-list input[type="checkbox"]');
+			const button = document.getElementById('toggleAllRandomButton');
+			const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    
+			if (allChecked) {
+				checkboxes.forEach(cb => cb.checked = false);
+				button.textContent = '일괄선택';
+			} else {
+				checkboxes.forEach(cb => cb.checked = true);
+				button.textContent = '일괄해제';
+			}
+		}
+
+		function updateToggleAllRandomButton() {
+			const checkboxes = document.querySelectorAll('#random-menu-checkbox-list input[type="checkbox"]');
+			const button = document.getElementById('toggleAllRandomButton');
+    
+			if (checkboxes.length === 0) return;
+    
+			const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+			button.textContent = allChecked ? '일괄해제' : '일괄선택';
+		}
+
 
         // 이전 결과 제외 토글
         function toggleExcludePrevious() {
